@@ -53,4 +53,57 @@ void solve() {
         cout<<"NO"<<endl;
     }
 }
+/////////////////----------O/1 knapsack-------------//////////
 
+You have N items, each with a weight wᵢ and value vᵢ. You have a bag that can carry up to W weight.
+
+Choose items to put in the bag so that their total value is maximum, without exceeding W.
+
+Solve using recursion.
+Input:
+4 10  
+4 60  
+3 50  
+5 70  
+2 30  
+
+Output:
+120
+Best choice: Pick items (3,5,2) → Total Weight = 10, Total Value = 120.
+N = 3, W = 10
+Weights:  [4, 3, 5]
+Values:   [60, 50, 70]
+recustion tree: not take / take
+                        (i=2, W=10)
+                  /                    \
+        (i=1, W=10)                   (i=1, W=5)  ← Took item 2 (wt=5val=70)
+        /          \                    /          \
+    (i=0, W=10)     (i=0, W=7)       (i=0, W=5)    (i=0, W=2)
+    /       \        /      \         /      \       /     \
+(60, 4)  (0, 10) (60, 4)   (0, 7)   (0, 5) (0, 2)  (0, 2)  (0, 2)
+code: 
+int recursion(int i , int w  , vector<int> val , vector<int> wt){
+    if(i==0){
+        if(wt[i]<=w) return val[i];
+        else return 0;
+    }
+    int nottake = 0+recursion(i-1 , w , val , wt);
+    int take = INT_MIN;
+    if(wt[i]<=w){
+        take = val[i]+recursion(i-1 , w-wt[i] , val , wt);
+    }
+    return max(nottake, take);
+}
+void solve() {
+   int n , w;
+   cin>>n>>w;
+   vector<int> val(n);
+   vector<int> wt(n);
+   for(int i =0 ;i<n;i++){
+        int x , y;
+        cin>>x>>y;
+        wt[i] = x;
+        val[i] = y;
+   }
+   cout<<recursion(n-1 , w , val , wt);
+}
